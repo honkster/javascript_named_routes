@@ -1,0 +1,33 @@
+var Routes = (function() {
+  var _ = {};
+  
+  var _path = function(segments, keys, args) {
+    var ki = 0;
+    var next_arg;
+    
+    if (args.length == 1 && typeof args[0] == "object") {
+      args = args[0];
+      next_arg = function() { return args[keys[ki++]]; };
+    } else {
+      next_arg = function() { return args[ki++]; };
+    }
+    
+    for (var i = 0; i < segments.length; ++i) {
+      if (segments[i] === _) {
+        segments[i] = next_arg();
+      }
+    }
+    
+    return segments.join('');
+  };
+  
+  return {
+  <% separator = '' -%>
+  <% for name, segments, keys in @route_data %>
+    <%= separator %><%= name %>:
+      function() { return _path(<%= segments %>, <%= keys %>, arguments); }
+      <% separator = ',' -%>
+  <% end -%>
+
+  };
+}());
