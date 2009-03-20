@@ -15,7 +15,7 @@ module JavascriptNamedRoutes
     def route_info(name, route)
       segments = []
       keys = []
-      route.segments.reject(&:optional?).each do |segment|
+      route.segments.each do |segment|
         if segment.class == ActionController::Routing::DynamicSegment
           keys << segment.key.to_json
           segments << '_'
@@ -23,6 +23,7 @@ module JavascriptNamedRoutes
           segments << segment.value.to_json
         end
       end
+      segments.pop if route.segments.last.optional?
       name = "#{name}_path".to_json
       segments = '[' + segments.join(', ') + ']'
       keys = '[' + keys.join(', ') + ']'
