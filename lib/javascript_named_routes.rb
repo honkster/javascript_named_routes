@@ -43,5 +43,12 @@ module JavascriptNamedRoutes
     end
   end
   
+  module ViewHelperExtensions
+    def javascript_named_routes
+      javascript_include_tag 'routes'
+    end
+  end
+  
   ActionController::Routing::RouteSet::Mapper.send :include, MapperExtensions
+  ActionView::Base.send :include, ViewHelperExtensions
 end
