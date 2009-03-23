@@ -1,0 +1,32 @@
+Javascript_named_routes is a Rails plugin I created to expose the named routes in your application as JavaScript functions on the client side. Setting it up is a ridiculously easy 3-step process -
+
+* <code>script/plugin install git://github.com/sentientholon/javascript_named_routes.git</code>
+* add <code>map.javascript_named_routes</code> to your routes.rb
+* add <code><%= javascript_named_routes %></code> to your view layouts
+
+That's it.
+
+So, let's say your application has a standard User resource. That means you already have some URL helpers available to your application: <code>users_path</code>, <code>user_path</code>, <code>edit_user_path</code>, etc. With javascript_named_routes, you can now access these from JavaScript, like so -
+
+* <code>Routes.users_path()</code> => <code>/users</code>
+* <code>Routes.user_path(123)</code> => <code>/users/123</code>
+* <code>Routes.user_path({id: 123})</code> - or, as an object! => <code>/users/123</code>
+
+Routes with multiple placeholders work the same way - you can either pass them as positional parameters, where they'll be placed into the URL from left-to-right, or you can pass a JavaScript object containing the keys from the route string. For example, the named route:
+
+* <code>map.show_account, '/account/:last_name/:first_name', :controller => 'accounts', :action => 'show'</code>
+
+Can be accessed as either -
+
+* <code>Routes.show_account_path('Doe', 'John')</code>, or
+* <code>Routes.show_account_path({first_name: 'John', last_name: 'Doe'})</code>
+
+Becoming <code>/account/Doe/John</code>.
+
+Finally, extra parameters not specified by the route will be placed in the URL query string:
+
+* <code>Routes.show_account_path('{first_name: 'John', last_name: 'Doe', age: 42})</code>
+
+Becoming <code>/account/Doe/John?age=42</code>.
+
+Enjoy!
