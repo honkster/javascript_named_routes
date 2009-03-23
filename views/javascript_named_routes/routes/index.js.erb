@@ -1,38 +1,58 @@
 var Routes = (function() {
   var _ = {};
   
-  var _route = function(required, optional, names) {
+  var route = function(segments, keys) {
     return function() {
-      var i, params = [];
-      
-      if (arguments.length == 1 && typeof arguments[0] == "object") {
-        for (i = 0; i < names.length; ++i) {
-          if (!arguments[0][names[i]])
-            break;
-          params.push(arguments[0][names[i]]);
+      // build params object from arguments
+      var params = {};
+      var n = arguments.length;
+      if (typeof arguments[n-1] == 'object') {
+        var kwargs = arguments[n-1];
+        for (var k in kwargs) {
+          if (kwargs.hasOwnProperty(k)) {
+            params[k] = kwargs[k];
+          }
         }
-      } else {
-        for (i = 0; i < arguments.length; ++i) {
-          params.push(arguments[i]);
+        n--;
+      }
+      for (var i = 0; i < n; i++) {
+        params[keys[i]] = arguments[i];
+      }
+      
+      var path = [];
+      
+      // build path component of URI from route segments
+      var pi = 0;
+      for (var i = 0; i < segments.length; i++) {
+        if (segments[i] == _) {
+          var k = keys[pi++];
+          path.push(encodeURIComponent(params[k]));
+          delete params[k];
+        } else {
+          path.push(segments[i]);
         }
       }
       
-      var path = [], pi = 0;
-      for (i = 0; i < required.length; ++i) {
-        path.push(required[i] === _ ? params[pi++] : required[i]);
+      // put any extra params in the query string
+      var separator = '?';
+      for (var k in params) {
+        if (params.hasOwnProperty(k)) {
+          path.push(separator);
+          path.push(k);
+          path.push('=');
+          path.push(encodeURIComponent(params[k]));
+          separator = '&';
+        }
       }
-      for (i = 0; i < optional.length && pi < params.length; ++i) {
-        path.push(optional[i] === _ ? params[pi++] : optional[i]);
-      }
+      
       return path.join('');
     };
   };
   
   return {
   <% separator = '' -%>
-  <% for name, required, optional, segment_keys in @route_data %>
-    <%= separator %><%= name %>: _route(<%= required %>, <%= optional %>, <%= segment_keys %>)<% separator = ',' -%>
-  <% end -%>
-
+  <% for name, segments, keys in @route_data %>
+    <%= separator %><%= name %>: route(<%= segments %>, <%= keys %>)<% separator = ',' -%>
+  <% end %>
   };
 }());

@@ -13,28 +13,23 @@ module JavascriptNamedRoutes
     private
     
     def route_info(name, route)
-      required = []
-      optional = []
-      segment_keys = []
+      segments = []
+      keys = []
       
-      segments = required
       route.segments.each do |segment|
-        segments = optional if segment != route.segments.first and segment.optional?
         if segment.is_a? ActionController::Routing::DynamicSegment
-          segment_keys << segment.key.to_json
+          keys << segment.key.to_json
           segments << '_'
         else
           segments << segment.value.to_json
         end
       end
       
-      optional.pop while !optional.empty? and optional.last != '_'
-      
+      segments.pop if segments.last == '/'.to_json
       name = "#{name}_path".to_json
-      required = '[' + required.join(', ') + ']'
-      optional = '[' + optional.join(', ') + ']'
-      segment_keys = '[' + segment_keys.join(', ') + ']'
-      [name, required, optional, segment_keys]
+      segments = '[' + segments.join(', ') + ']'
+      keys = '[' + keys.join(', ') + ']'
+      [name, segments, keys]
     end
     
     def collect_routes
