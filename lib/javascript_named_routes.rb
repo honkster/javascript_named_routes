@@ -2,6 +2,8 @@ module JavascriptNamedRoutes
   class RoutesController < ActionController::Base
     prepend_view_path File.dirname(__FILE__) + '/../views'
     
+    caches_page :index
+    
     def index
       respond_to do |format|
         format.js do
@@ -52,6 +54,13 @@ module JavascriptNamedRoutes
     end
   end
   
+  # inject the mapper and view extensions
   ActionController::Routing::RouteSet::Mapper.send :include, MapperExtensions
   ActionView::Base.send :include, ViewHelperExtensions
+  
+  # make sure the cached file is removed on startup
+  begin
+    File.delete(RAILS_ROOT + '/public/javascripts/routes.js')
+  rescue Errno::ENOENT => e
+  end
 end
