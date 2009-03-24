@@ -43,7 +43,7 @@ module JavascriptNamedRoutes
       get :index
       
       safari = Appscript.app('Safari')
-      window = safari.documents.get.first
+      window = safari.make(:new => :document)
       window.do_JavaScript(@response.body)
       {
         "Routes.users_path()" => "/users",
@@ -62,6 +62,7 @@ module JavascriptNamedRoutes
       }.each_pair do |expr, expected|
         assert_equal expected, window.do_JavaScript(expr) 
       end
+      window.close
     rescue LoadError => e
       warn "Skipping JavaScript tests, want applescript"
     end
