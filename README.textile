@@ -18,15 +18,15 @@ Routes with multiple placeholders work the same way - you can either pass them a
 
 Can be accessed as either -
 
-* <code>Routes.show_account_path('Doe', 'John')</code>, or
-* <code>Routes.show_account_path({first_name: 'John', last_name: 'Doe'})</code>
+* <code>Routes.show_account_path('Doe', 'John')</code> => <code>/account/Doe/John</code>, or
+* <code>Routes.show_account_path({first_name: 'John', last_name: 'Doe'})</code> => <code>/account/Doe/John</code>
 
-Becoming <code>/account/Doe/John</code>.
+Finally, extra parameters not specified by the route will be placed in the URL query string -
 
-Finally, extra parameters not specified by the route will be placed in the URL query string:
+* <code>Routes.show_account_path('{first_name: 'John', last_name: 'Doe', age: 42})</code> => <code>/account/Doe/John?age=42</code>.
 
-* <code>Routes.show_account_path('{first_name: 'John', last_name: 'Doe', age: 42})</code>
+In fact, positional and keyword parameters can be freely mixed -
 
-Becoming <code>/account/Doe/John?age=42</code>.
+* <code>Routes.user_path(123, {age: 42})</code> => <code>/users/123?age=42</code>
 
 Enjoy!
