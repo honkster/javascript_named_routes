@@ -1,4 +1,5 @@
 require 'rubygems'
+require 'open3'
 require 'test/unit'
 require 'action_controller'
 require 'action_controller/test_process'
@@ -20,31 +21,34 @@ module JavascriptNamedRoutes
       end
     end
     
-    def test_js_generation
+    def test_action_success
       get :index
       assert_response :success
-      body = @response.body.gsub(/ +/, '')
-      
-      [
-        '"users_path":route(["/","users"],[])',
-        '"formatted_users_path":route(["/","users",".",_],["format"])',
-        '"user_path":route(["/","users","/",_],["id"])',
-        '"edit_user_path":route(["/","users","/",_,"/","edit"],["id"])',
-        '"user_accounts_path":route(["/","users","/",_,"/","accounts"],["user_id"])',
-        '"user_account_path":route(["/","users","/",_,"/","accounts","/",_],["user_id","id"])',
-        '"edit_user_account_path":route(["/","users","/",_,"/","accounts","/",_,"/","edit"],["user_id","id"])'
-      ].each do |expected|
-        assert body.include?(expected)
+    end
+    
+    [
+      '"users_path":route(["/","users"],[])',
+      '"formatted_users_path":route(["/","users",".",_],["format"])',
+      '"user_path":route(["/","users","/",_],["id"])',
+      '"edit_user_path":route(["/","users","/",_,"/","edit"],["id"])',
+      '"user_accounts_path":route(["/","users","/",_,"/","accounts"],["user_id"])',
+      '"user_account_path":route(["/","users","/",_,"/","accounts","/",_],["user_id","id"])',
+      '"edit_user_account_path":route(["/","users","/",_,"/","accounts","/",_,"/","edit"],["user_id","id"])'
+    ].each do |expected|
+      route_name = expected.match(/^"(\w+)"/).captures.first
+      define_method("test_js_generation_for_#{route_name}") do
+        help_test_js_generation(expected)
       end
     end
     
-    def test_js_routes
-      require 'appscript'
+    def help_test_js_generation(expected)
       get :index
-      
-      safari = Appscript.app('Safari')
-      window = safari.make(:new => :document)
-      window.do_JavaScript(@response.body)
+      body = @response.body.gsub(/ +/, '')
+      assert body.include?(expected), "@response.body should contain <#{expected}>"
+    end
+    
+    # should be true if you have a Mac and JavaScript OSA installed
+    if system('osascript -l JavaScript -e 0 2> /dev/null')
       {
         "Routes.users_path()" => "/users",
         "Routes.formatted_users_path({format: 'xml'})" => "/users.xml",
@@ -60,11 +64,22 @@ module JavascriptNamedRoutes
         "Routes.edit_user_account_path(123, 456)" => "/users/123/accounts/456/edit",
         "Routes.edit_user_account_path(123, 456, {foo: 42})" => "/users/123/accounts/456/edit?foo=42"
       }.each_pair do |expr, expected|
-        assert_equal expected, window.do_JavaScript(expr) 
+        route_name = expr.match(/^Routes\.(\w+)/).captures.first
+        define_method("test_js_route_for_#{route_name}") do
+          help_test_js_route(expr, expected)
+        end
       end
-      window.close
-    rescue LoadError => e
-      warn "Skipping JavaScript tests, want applescript"
+    else
+      warn "Skipping JavaScript tests, want Javascript OSA"
+    end
+    
+    def help_test_js_route(expr, expected)
+      get :index
+      Open3.popen3('osascript', '-l', 'JavaScript') do |input, output|
+        input << @response.body << expr
+        input.close
+        assert_equal expected, output.readline.chomp
+      end
     end
   end
 end
