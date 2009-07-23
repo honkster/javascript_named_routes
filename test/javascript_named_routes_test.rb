@@ -21,7 +21,7 @@ module JavascriptNamedRoutes
       end
     end
     
-    def testAction_success
+    def test_action_success
       get :index
       assert_response :success
     end
