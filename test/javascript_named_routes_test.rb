@@ -21,19 +21,18 @@ module JavascriptNamedRoutes
       end
     end
     
-    def test_action_success
+    def testAction_success
       get :index
       assert_response :success
     end
     
     [
-      '"users_path":route(["/","users"],[])',
-      '"formatted_users_path":route(["/","users",".",_],["format"])',
-      '"user_path":route(["/","users","/",_],["id"])',
-      '"edit_user_path":route(["/","users","/",_,"/","edit"],["id"])',
-      '"user_accounts_path":route(["/","users","/",_,"/","accounts"],["user_id"])',
-      '"user_account_path":route(["/","users","/",_,"/","accounts","/",_],["user_id","id"])',
-      '"edit_user_account_path":route(["/","users","/",_,"/","accounts","/",_,"/","edit"],["user_id","id"])'
+      '"usersPath":route(["/","users"],[])',
+      '"userPath":route(["/","users","/",_],["id"])',
+      '"editUserPath":route(["/","users","/",_,"/","edit"],["id"])',
+      '"userAccountsPath":route(["/","users","/",_,"/","accounts"],["user_id"])',
+      '"userAccountPath":route(["/","users","/",_,"/","accounts","/",_],["user_id","id"])',
+      '"editUserAccountPath":route(["/","users","/",_,"/","accounts","/",_,"/","edit"],["user_id","id"])'
     ].each do |expected|
       route_name = expected.match(/^"(\w+)"/).captures.first
       define_method("test_js_generation_for_#{route_name}") do
@@ -50,19 +49,19 @@ module JavascriptNamedRoutes
     # should be true if you have a Mac and JavaScript OSA installed
     if system('osascript -l JavaScript -e 0 2> /dev/null')
       {
-        "Routes.users_path()" => "/users",
-        "Routes.formatted_users_path({format: 'xml'})" => "/users.xml",
-        "Routes.user_path(123)" => "/users/123",
-        "Routes.user_path(123, {foo: 42})" => "/users/123?foo=42",
-        "Routes.user_path({id: 123})" => "/users/123",
-        "Routes.edit_user_path(123)" => "/users/123/edit",
-        "Routes.edit_user_path({id: 123})" => "/users/123/edit",
-        "Routes.edit_user_path({id: 123, foo: 42, bar: 43})" => "/users/123/edit?foo=42&bar=43",
-        "Routes.user_accounts_path(123)" => "/users/123/accounts",
-        "Routes.user_account_path(123, 456)" => "/users/123/accounts/456",
-        "Routes.user_account_path({id: 456, user_id: 123})" => "/users/123/accounts/456",
-        "Routes.edit_user_account_path(123, 456)" => "/users/123/accounts/456/edit",
-        "Routes.edit_user_account_path(123, 456, {foo: 42})" => "/users/123/accounts/456/edit?foo=42"
+        "Routes.usersPath()" => "/users",
+        "Routes.usersPath({format: 'xml'})" => "/users.xml",
+        "Routes.userPath(123)" => "/users/123",
+        "Routes.userPath(123, {foo: 42})" => "/users/123?foo=42",
+        "Routes.userPath({id: 123})" => "/users/123",
+        "Routes.editUserPath(123)" => "/users/123/edit",
+        "Routes.editUserPath({id: 123})" => "/users/123/edit",
+        "Routes.editUserPath({id: 123, foo: 42, bar: 43})" => "/users/123/edit?foo=42&bar=43",
+        "Routes.userAccountsPath(123)" => "/users/123/accounts",
+        "Routes.userAccountPath(123, 456)" => "/users/123/accounts/456",
+        "Routes.userAccountPath({id: 456, user_id: 123})" => "/users/123/accounts/456",
+        "Routes.editUserAccountPath(123, 456)" => "/users/123/accounts/456/edit",
+        "Routes.editUserAccountPath(123, 456, {foo: 42})" => "/users/123/accounts/456/edit?foo=42"
       }.each_pair do |expr, expected|
         route_name = expr.match(/^Routes\.(\w+)/).captures.first
         define_method("test_js_route_for_#{route_name}") do

@@ -8,9 +8,11 @@ That's it.
 
 So, let's say your application has a standard User resource. That means you already have some URL helpers available to your application: <code>users_path</code>, <code>user_path</code>, <code>edit_user_path</code>, etc. With javascript_named_routes, you can now access these from JavaScript, like so -
 
-* <code>Routes.users_path()</code> => <code>/users</code>
-* <code>Routes.user_path(123)</code> => <code>/users/123</code>
-* <code>Routes.user_path({id: 123})</code> - or, as an object! => <code>/users/123</code>
+* <code>Routes.usersPath()</code> => <code>/users</code>
+* <code>Routes.userPath(123)</code> => <code>/users/123</code>
+* <code>Routes.userPath({id: 123})</code> - or, as an object! => <code>/users/123</code>
+
+*_Note that in the most recent version, function names have been camelized relative to their Ruby names, to be more consistent with JavaScript naming conventions._*
 
 Routes with multiple placeholders work the same way - you can either pass them as positional parameters, where they'll be placed into the URL from left-to-right, or you can pass a JavaScript object containing the keys from the route string. For example, the named route:
 
@@ -18,15 +20,19 @@ Routes with multiple placeholders work the same way - you can either pass them a
 
 Can be accessed as either -
 
-* <code>Routes.show_account_path('Doe', 'John')</code> => <code>/account/Doe/John</code>, or
-* <code>Routes.show_account_path({first_name: 'John', last_name: 'Doe'})</code> => <code>/account/Doe/John</code>
+* <code>Routes.showAccountPath('Doe', 'John')</code> => <code>/account/Doe/John</code>, or
+* <code>Routes.showAccountPath({first_name: 'John', last_name: 'Doe'})</code> => <code>/account/Doe/John</code>
 
 Finally, extra parameters not specified by the route will be placed in the URL query string -
 
-* <code>Routes.show_account_path('{first_name: 'John', last_name: 'Doe', age: 42})</code> => <code>/account/Doe/John?age=42</code>.
+* <code>Routes.showAccountPath('{first_name: 'John', last_name: 'Doe', age: 42})</code> => <code>/account/Doe/John?age=42</code>.
 
 In fact, positional and keyword parameters can be freely mixed -
 
-* <code>Routes.user_path(123, {age: 42})</code> => <code>/users/123?age=42</code>
+* <code>Routes.userPath(123, {age: 42})</code> => <code>/users/123?age=42</code>
+
+*_Please Note: The handling of the <code>format</code> parameter has changed in Rails 2.3!  If you need the pre-2.3 functionality, you need to install the rails_2_2 branch:_*
+
+* <code>script/plugin install git://github.com/sentientholon/javascript_named_routes.git -r rails_2_2</code>
 
 Enjoy!

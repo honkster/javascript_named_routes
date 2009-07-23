@@ -33,6 +33,13 @@ var Routes = (function() {
         }
       }
       
+      // add the format, if provided
+      if (params.format) {
+        path.push('.');
+        path.push(params.format);
+        delete params.format;
+      }
+      
       // put any extra params in the query string
       var separator = '?';
       for (var k in params) {

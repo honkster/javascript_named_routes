@@ -16,21 +16,26 @@ module JavascriptNamedRoutes
     
     def route_info(name, route)
       segments = []
-      keys = []
+      keys     = []
       
       route.segments.each do |segment|
-        if segment.is_a? ActionController::Routing::DynamicSegment
-          keys << segment.key.to_json
-          segments << '_'
-        else
-          segments << segment.value.to_json
+        case segment
+          when ActionController::Routing::OptionalFormatSegment
+            break
+          when ActionController::Routing::DynamicSegment
+            segments << '_'
+            keys     << segment.key.to_json
+          else
+            segments << segment.value.to_json
         end
       end
       
       segments.pop if segments.last == '/'.to_json
-      name = "#{name}_path".to_json
+      
+      name     = "#{name}_path".camelize(:lower).to_json
       segments = '[' + segments.join(', ') + ']'
-      keys = '[' + keys.join(', ') + ']'
+      keys     = '[' + keys.join(', ') + ']'
+      
       [name, segments, keys]
     end
     
