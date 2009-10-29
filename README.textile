@@ -1,6 +1,6 @@
 Javascript_named_routes is a Rails plugin I created to expose the named routes in your application as JavaScript functions on the client side. Setting it up is a ridiculously easy 3-step process -
 
-* <code>script/plugin install git://github.com/sentientholon/javascript_named_routes.git</code>
+* <code>script/plugin install git://github.com/sustainablecode/javascript_named_routes.git</code>
 * add <code>map.javascript_named_routes</code> to your routes.rb
 * add <code><%= javascript_named_routes %></code> to your view layouts
 
@@ -33,6 +33,6 @@ In fact, positional and keyword parameters can be freely mixed -
 
 *_Please Note: The handling of the <code>format</code> parameter has changed in Rails 2.3!  If you need the pre-2.3 functionality, you need to install the rails_2_2 branch:_*
 
-* <code>script/plugin install git://github.com/sentientholon/javascript_named_routes.git -r rails_2_2</code>
+* <code>script/plugin install git://github.com/sustainablecode/javascript_named_routes.git -r rails_2_2</code>
 
 Enjoy!
