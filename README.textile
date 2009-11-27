@@ -25,7 +25,7 @@ Can be accessed as either -
 
 Finally, extra parameters not specified by the route will be placed in the URL query string -
 
-* <code>Routes.showAccountPath('{first_name: 'John', last_name: 'Doe', age: 42})</code> => <code>/account/Doe/John?age=42</code>.
+* <code>Routes.showAccountPath({first_name: 'John', last_name: 'Doe', age: 42})</code> => <code>/account/Doe/John?age=42</code>.
 
 In fact, positional and keyword parameters can be freely mixed -
 
